@@ -19,8 +19,8 @@ jobs:
       - run:
           name: Build Docker image & Publish
           command: |
+            echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
             docker build ./<< parameters.mw-version >>/apache -t $IMAGE_NAME:<< parameters.mw-version >>
-            echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push $IMAGE_NAME:<< parameters.mw-version >>
 
 workflows:
