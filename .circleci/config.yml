@@ -7,6 +7,9 @@ executors:
       IMAGE_NAME: antt1995/dsp-mediawiki
     docker:
       - image: cimg/base:2024.01
+        auth:
+          username: $DOCKER_LOGIN
+          password: $DOCKER_PASSWORD
 jobs:
   build:
     parameters:
@@ -19,7 +22,7 @@ jobs:
       - run:
           name: Build Docker image & Publish
           command: |
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
             docker build ./<< parameters.mw-version >>/apache -t $IMAGE_NAME:<< parameters.mw-version >>
             docker push $IMAGE_NAME:<< parameters.mw-version >>
 
