@@ -67,14 +67,13 @@ RUN set -eux; \
 	
 # Enable RemoteIp
 RUN set -eux; \
-    a2enmod rewrite; \
+    a2enmod remoteip; \
     { \
 		echo 'RemoteIPHeader X-Real-IP'; \
 		echo 'RemoteIPInternalProxy 10.0.0.0/8'; \
 		echo 'RemoteIPInternalProxy 172.16.0.0/12'; \
 	} > "$APACHE_CONFDIR/conf-available/remoteip.conf"; \
-    a2enconf remoteip; \
-	service apache2 reload
+    a2enconf remoteip
 
 # Enable AllowEncodedSlashes for VisualEditor
 RUN sed -i "s/<\/VirtualHost>/\tAllowEncodedSlashes NoDecode\n<\/VirtualHost>/" "$APACHE_CONFDIR/sites-available/000-default.conf"
