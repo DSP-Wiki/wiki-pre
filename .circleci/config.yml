@@ -38,4 +38,4 @@ workflows:
             parameters:
               mw-version: ['1.39', '1.40', '1.41']
           context:
-            - docker
+            - DOCKER
