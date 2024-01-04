@@ -71,7 +71,7 @@ RUN set -eux; \
     { \
 		echo 'RemoteIPHeader X-Real-IP'; \
 		echo 'RemoteIPInternalProxy 10.0.0.0/8'; \
-		echo 'RemoteIPInternalProxy 172.16.0.0/12' \
+		echo 'RemoteIPInternalProxy 172.16.0.0/12'; \
 	} > "$APACHE_CONFDIR/conf-available/remoteip.conf"; \
     a2enconf remoteip; \
 	service apache2 reload
