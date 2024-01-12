@@ -83,8 +83,7 @@ COPY ./config/php-config.ini /usr/local/etc/php/conf.d/php-config.ini
 RUN echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini; \
     echo 'max_execution_time = 60' >> /usr/local/etc/php/conf.d/docker-php-executiontime.ini
 
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-COPY composer.local.json /var/www/html
+
 
 RUN pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="no" with-liblz4="yes"' redis \
 	&& docker-php-ext-enable redis
@@ -120,19 +119,26 @@ COPY ./config/LocalSettings.php /var/www/html/LocalSettings.php
 
 RUN cd /var/www/html/ && rm FAQ HISTORY SECURITY UPGRADE INSTALL CREDITS COPYING CODE_OF_CONDUCT.md README.md RELEASE-NOTES-1.39
 
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+COPY composer.local.json /var/www/html
+
+RUN set -eux; \
+	chown -R www-data:www-data /var/www
+
 WORKDIR /var/www/html
 
 USER www-data
 
 RUN set -eux; \
-   /usr/bin/composer config --no-plugins allow-plugins.composer/installers true; \
-   /usr/bin/composer install --no-dev \
-     --ignore-platform-reqs \
-     --no-ansi \
-     --no-interaction \
-     --no-scripts; \
-   rm -f composer.lock.json ;\
-   /usr/bin/composer update --no-dev \
+	/usr/bin/composer config --no-plugins allow-plugins.composer/installers true; \
+	/usr/bin/composer install --no-dev \
+							--ignore-platform-reqs \
+							--no-ansi \
+							--no-interaction \
+							--no-scripts; \
+	rm -f composer.lock.json ;\
+	/usr/bin/composer update --no-dev \
                             --no-ansi \
                             --no-interaction \
                             --no-scripts; \
