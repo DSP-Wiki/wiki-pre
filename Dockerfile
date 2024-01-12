@@ -81,7 +81,7 @@ RUN { \
 COPY ./config/php-config.ini /usr/local/etc/php/conf.d/php-config.ini
 
 RUN echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini; \
-    echo 'max_execution_time = 60' >> /usr/local/etc/php/conf.d/docker-php-executiontime.ini; \
+    echo 'max_execution_time = 60' >> /usr/local/etc/php/conf.d/docker-php-executiontime.ini
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/
 
