@@ -143,17 +143,8 @@ RUN set -eux; \
                             --no-interaction \
                             --no-scripts; \
 	\
-	mv /var/www/html/extensions/Checkuser /var/www/html/extensions/CheckUser; \
-	mv /var/www/html/extensions/Dismissablesitenotice /var/www/html/extensions/DismissableSiteNotice; \
-	mv /var/www/html/extensions/Nativesvghandler /var/www/html/extensions/NativeSvgHandler; \
-	mv /var/www/html/extensions/Mediasearch /var/www/html/extensions/MediaSearch; \
-	mv /var/www/html/extensions/Revisionslider /var/www/html/extensions/RevisionSlider; \
-	mv /var/www/html/extensions/Rss /var/www/html/extensions/RSS; \
-	mv /var/www/html/extensions/Shortdescription /var/www/html/extensions/ShortDescription; \
-	mv /var/www/html/extensions/Webauthn /var/www/html/extensions/WebAuthn; \
+	mv /var/www/html/extensions /var/www/html/extensions; \
 	mv /var/www/html/skins/citizen /var/www/html/skins/Citizen; \
-	mv /var/www/html/extensions/Twocolconflict /var/www/html/extensions/TwoColConflict; \
-	mv /var/www/html/extensions/Pageviewinfo /var/www/html/extensions/PageViewInfo; \
 	\
 
 	chown -R www-data:www-data /var/www
