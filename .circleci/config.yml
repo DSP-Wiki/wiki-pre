@@ -18,15 +18,12 @@ jobs:
           name: Build Docker image & Publish
           command: |
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
-            docker build . -t $IMAGE_NAME:1.39
-            docker push $IMAGE_NAME:1.39
+            docker build . -t $IMAGE_NAME:1.39-dev
+            docker push $IMAGE_NAME:1.39-dev
 
 workflows:
-  build-main:
+  build-dev:
     jobs:
       - build:
-          filters:
-            branches:
-              only: main
           context:
             - DOCKER
