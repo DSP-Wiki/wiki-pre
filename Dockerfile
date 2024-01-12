@@ -83,7 +83,7 @@ COPY ./config/php-config.ini /usr/local/etc/php/conf.d/php-config.ini
 RUN echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini; \
     echo 'max_execution_time = 60' >> /usr/local/etc/php/conf.d/docker-php-executiontime.ini
 
-COPY --from=composer /usr/bin/composer /usr/local/bin/
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY composer.local.json /var/www/html
 
 RUN pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="no" with-liblz4="yes"' redis \
