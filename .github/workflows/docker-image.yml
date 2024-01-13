@@ -27,5 +27,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: dspwiki/wiki-pre:latest
-          tags: dspwiki/wiki-pre:$(date +%s)
+          tags: |
+            dspwiki/wiki-pre:latest
+            dspwiki/wiki-pre:$(date +%s)
