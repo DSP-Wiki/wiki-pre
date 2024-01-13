@@ -1,5 +1,6 @@
 FROM php:8.1-apache
 
+LABEL maintainer="antt1995@antts.uk"
 # System dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	git \
@@ -82,8 +83,6 @@ COPY ./config/php-config.ini /usr/local/etc/php/conf.d/php-config.ini
 
 RUN echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini; \
     echo 'max_execution_time = 60' >> /usr/local/etc/php/conf.d/docker-php-executiontime.ini
-
-
 
 RUN pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="no" with-liblz4="yes"' redis \
 	&& docker-php-ext-enable redis
