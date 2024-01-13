@@ -1,10 +1,11 @@
 # About this Repo
 
-[![CircleCI](https://dl.circleci.com/insights-snapshot/gh/DSP-Wiki/mediawiki-docker/main/build-base/badge.svg?window=30d)](https://app.circleci.com/insights/github/DSP-Wiki/mediawiki-docker/workflows/build-base/overview?branch=base&reporting-window=last-30-days&insights-snapshot=true)
+[![Docker Build & Update](https://github.com/DSP-Wiki/wiki-pre/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/DSP-Wiki/wiki-pre/actions/workflows/docker-image.yml)
 
+This is the Git repo of the Docker Custom Image for Dyson Sphere Program Wiki. 
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/DSP-Wiki/mediawiki-docker/tree/base.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/DSP-Wiki/mediawiki-docker/tree/base)
+This is the Base Docker Image [dspwiki/wiki-pre](https://hub.docker.com/r/dspwiki/wiki-pre) for the Main docker Image.
 
-This is the Git repo of the Docker Custom Image for [dsp-mediawiki](https://hub.docker.com/r/antt1995/dsp-mediawiki). 
+It only Contains the Requirements for mediawiki to work along with redis.
 
-This Branch is the Base Docker Image antt1995/dsp-mediawiki:base for the Main docker
+This Image dose not contain MediaWiki
