@@ -1,4 +1,4 @@
-name: Docker Build & Update
+name: Docker Build & Push
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
       - '*'
 
 jobs:
-  docker:
+  build-push:
     runs-on: ubuntu-latest
     steps:
       -
@@ -34,10 +34,3 @@ jobs:
           tags: |
             dspwiki/wiki-pre:latest
             dspwiki/wiki-pre:${{ steps.date.outputs.date }}
-      - 
-        name: Update repo description
-        uses: peter-evans/dockerhub-description@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: dspwiki/wiki-pre
