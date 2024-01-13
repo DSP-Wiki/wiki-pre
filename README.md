@@ -8,4 +8,4 @@ This is the Base Docker Image [dspwiki/wiki-pre](https://hub.docker.com/r/dspwik
 
 It only Contains the Requirements for mediawiki to work along with redis.
 
-This Image dose not contain MediaWiki
+This Image does not contain MediaWiki
