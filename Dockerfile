@@ -62,7 +62,7 @@ RUN a2enmod rewrite \
 # Enable RemoteIp
 RUN a2enmod remoteip \
 	&& { \
-	echo 'RemoteIPHeader X-Real-IP'; \
+	echo 'RemoteIPHeader X-Forwarded-For'; \
 	echo 'RemoteIPInternalProxy 10.0.0.0/8'; \
 	echo 'RemoteIPInternalProxy 172.16.0.0/12'; \
 	} > "$APACHE_CONFDIR/conf-available/remoteip.conf" \
