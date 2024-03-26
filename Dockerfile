@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.1-fpm
 
 LABEL maintainer="antt1995@antts.uk"
 # System dependencies
@@ -44,29 +44,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	luasandbox \
 	imagick \
 	&& rm -r /tmp/pear \
+	apt-mark auto '.*' > /dev/null; \
+	apt-mark manual $savedAptMark; \
+	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
+		| awk '/=>/ { print $3 }' \
+		| sort -u \
+		| xargs -r dpkg-query -S \
+		| cut -d: -f1 \
+		| sort -u \
+		| xargs -rt apt-mark manual; \
+	\
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Enable Short URLs
-RUN a2enmod rewrite \
-	&& { \
-	echo "<Directory /var/www/html>"; \
-	echo "  RewriteEngine On"; \
-	echo "  RewriteCond %{REQUEST_FILENAME} !-f"; \
-	echo "  RewriteCond %{REQUEST_FILENAME} !-d"; \
-	echo "  RewriteRule ^ %{DOCUMENT_ROOT}/index.php [L]"; \
-	echo "</Directory>"; \
-	} > "$APACHE_CONFDIR/conf-available/short-url.conf" \
-	&& a2enconf short-url
 
-# Enable RemoteIp
-RUN a2enmod remoteip \
-	&& { \
-	echo 'RemoteIPHeader X-Real-IP'; \
-	echo 'RemoteIPInternalProxy 10.0.0.0/8'; \
-	echo 'RemoteIPInternalProxy 172.16.0.0/12'; \
-	} > "$APACHE_CONFDIR/conf-available/remoteip.conf" \
-	&& a2enconf remoteip
 
 # Enable AllowEncodedSlashes for VisualEditor
 RUN sed -i "s/<\/VirtualHost>/\tAllowEncodedSlashes NoDecode\n<\/VirtualHost>/" "$APACHE_CONFDIR/sites-available/000-default.conf"
@@ -80,9 +72,14 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 COPY ./config/php-config.ini /usr/local/etc/php/conf.d/php-config.ini
-
+COPY ./config/robots.txt /var/www/robots.txt
 RUN echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini; \
-    echo 'max_execution_time = 60' >> /usr/local/etc/php/conf.d/docker-php-executiontime.ini
+    echo 'max_execution_time = 60' >> /usr/local/etc/php/conf.d/docker-php-executiontime.ini; \
+	echo 'pm.max_children = 30' >> /usr/local/etc/php-fpm.d/zz-docker.conf; \
+    echo 'pm.max_requests = 200' >> /usr/local/etc/php-fpm.d/zz-docker.conf; \
+	echo 'pm.start_servers = 10' >> /usr/local/etc/php-fpm.d/zz-docker.conf; \
+    echo 'pm.min_spare_servers = 10' >> /usr/local/etc/php-fpm.d/zz-docker.conf; \
+    echo 'pm.max_spare_servers = 30' >> /usr/local/etc/php-fpm.d/zz-docker.conf; 
 
 RUN pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="no" with-liblz4="yes"' redis \
 	&& docker-php-ext-enable redis
