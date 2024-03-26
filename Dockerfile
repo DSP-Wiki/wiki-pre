@@ -52,10 +52,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		| xargs -rt apt-mark manual; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Enable AllowEncodedSlashes for VisualEditor
-RUN sed -i "s/<\/VirtualHost>/\tAllowEncodedSlashes NoDecode\n<\/VirtualHost>/" "$APACHE_CONFDIR/sites-available/000-default.conf"
-
+	
 # Set recommended PHP.ini settings
 RUN { \
 	echo 'opcache.memory_consumption=128'; \
