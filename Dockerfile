@@ -1,6 +1,7 @@
 FROM php:8.1-fpm
 
 LABEL maintainer="antt1995@antts.uk"
+
 # System dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	git \
@@ -17,10 +18,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	liblua5.1-0 \
 	libzip4 \
 	s3cmd \
-	&& rm -rf /var/lib/apt/lists/*
-
-# Install the PHP extensions we need
-RUN apt-get update && apt-get install -y --no-install-recommends \
 	libicu-dev \
 	libonig-dev \
 	libcurl4-gnutls-dev \
@@ -53,12 +50,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		| cut -d: -f1 \
 		| sort -u \
 		| xargs -rt apt-mark manual; \
-	\
-	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-	&& rm -rf /var/lib/apt/lists/*
-
-# Enable Short URLs
-
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Enable AllowEncodedSlashes for VisualEditor
 RUN sed -i "s/<\/VirtualHost>/\tAllowEncodedSlashes NoDecode\n<\/VirtualHost>/" "$APACHE_CONFDIR/sites-available/000-default.conf"
@@ -69,17 +62,17 @@ RUN { \
 	echo 'opcache.interned_strings_buffer=8'; \
 	echo 'opcache.max_accelerated_files=4000'; \
 	echo 'opcache.revalidate_freq=60'; \
+	echo 'memory_limit = 512M'; \
+	echo 'max_execution_time = 60'; \
+	echo 'pm.max_children = 30'; \
+	echo 'pm.max_requests = 200'; \
+	echo 'pm.start_servers = 10'; \
+	echo 'pm.min_spare_servers = 10'; \
+	echo 'pm.max_spare_servers = 30'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 COPY ./config/php-config.ini /usr/local/etc/php/conf.d/php-config.ini
 COPY ./config/robots.txt /var/www/robots.txt
-RUN echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini; \
-    echo 'max_execution_time = 60' >> /usr/local/etc/php/conf.d/docker-php-executiontime.ini; \
-	echo 'pm.max_children = 30' >> /usr/local/etc/php-fpm.d/zz-docker.conf; \
-    echo 'pm.max_requests = 200' >> /usr/local/etc/php-fpm.d/zz-docker.conf; \
-	echo 'pm.start_servers = 10' >> /usr/local/etc/php-fpm.d/zz-docker.conf; \
-    echo 'pm.min_spare_servers = 10' >> /usr/local/etc/php-fpm.d/zz-docker.conf; \
-    echo 'pm.max_spare_servers = 30' >> /usr/local/etc/php-fpm.d/zz-docker.conf; 
 
 RUN pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="no" with-liblz4="yes"' redis \
 	&& docker-php-ext-enable redis
